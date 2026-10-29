@@ -722,3 +722,14 @@ iframe, video, table { max-width: 100%; }
   .logo { font-size: 17px; }
   .hero h1, .page-hero h1 { font-size: 27px; }
 }
+
+/* Landscape phones (short screens) */
+@media (orientation: landscape) and (max-height: 520px) {
+  .carousel-stage { height: calc(100vh - 130px); height: calc(100dvh - 130px); min-height: 200px; aspect-ratio: auto; }
+  .carousel-thumbs img { width: 72px; height: 52px; }
+  .hero { padding: 32px 0 24px; }
+  .page-hero { padding: 32px 0 20px; }
+  section { padding: 36px 0; }
+  .lightbox img { max-height: 100%; }
+  .map-embed-wrap { height: 220px; }
+}
