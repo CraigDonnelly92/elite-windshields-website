@@ -671,7 +671,7 @@ iframe, video, table { max-width: 100%; }
   .logo { font-size: 19px; }
   .nav-right { gap: 8px; }
   .nav-phone { font-size: 0; width: 44px; height: 44px; justify-content: center; border: 1px solid var(--card-border); border-radius: 50%; }
-  .nav-phone::before { content: "\1F4DE"; font-size: 18px; }
+  .nav-phone .ico-phone { width: 22px; height: 22px; }
   .topbar { font-size: 12px; }
   section { padding: 44px 0; }
   .hero { padding: 36px 0 32px; }
@@ -733,3 +733,6 @@ iframe, video, table { max-width: 100%; }
   .lightbox img { max-height: 100%; }
   .map-embed-wrap { height: 220px; }
 }
+
+/* Phone icon: same red handset on every device */
+.ico-phone { color: #ef4444; flex-shrink: 0; display: inline-block; vertical-align: middle; }
