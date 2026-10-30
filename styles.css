@@ -738,3 +738,9 @@ iframe, video, table { max-width: 100%; }
 .ico-phone { color: #ef4444; flex-shrink: 0; display: inline-block; vertical-align: middle; }
 
 .hours-note { font-size: 12px !important; font-style: italic; color: var(--text-muted); margin-top: 6px; }
+
+/* Legal pages */
+.legal { max-width: 800px; }
+.legal h2 { font-size: 20px; margin: 32px 0 10px; }
+.legal p { color: var(--text-muted); margin: 0 0 14px; }
+.legal .legal-link { color: var(--blue-light); font-weight: 600; }
