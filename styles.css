@@ -736,3 +736,5 @@ iframe, video, table { max-width: 100%; }
 
 /* Phone icon: same red handset on every device */
 .ico-phone { color: #ef4444; flex-shrink: 0; display: inline-block; vertical-align: middle; }
+
+.hours-note { font-size: 12px !important; font-style: italic; color: var(--text-muted); margin-top: 6px; }
