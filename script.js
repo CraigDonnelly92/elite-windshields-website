@@ -1,5 +1,13 @@
 // Elite Windshields - shared behavior
 
+// ---- Form settings ----
+// Quote and contact forms are in TEST MODE while FORM_ENDPOINT is empty: they validate and show the
+// thank-you message, but nothing is sent anywhere. To go live, paste the form service's URL below
+// (for example a Formspree or Web3Forms endpoint) and add any extra fields it needs (such as an access key).
+var FORM_ENDPOINT = '';
+var FORM_EXTRA_FIELDS = {};
+
+
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function () {
   var hamburger = document.querySelector('.hamburger');
@@ -142,12 +150,113 @@ document.addEventListener('DOMContentLoaded', function () {
     start();
   }
 
-  // Basic form submit handling (demo only, no backend)
+  // Quote + contact forms
+  var AUTOCOMPLETE = {
+    'q-first': 'given-name', 'q-last': 'family-name', 'q-email': 'email', 'q-phone': 'tel',
+    'c-name': 'name', 'c-email': 'email', 'c-phone': 'tel'
+  };
+
+  function formData(form) {
+    var data = {};
+    form.querySelectorAll('input, select, textarea').forEach(function (el) {
+      if (el.name === 'website' || el.type === 'submit' || el.type === 'button' || !el.id) return;
+      var val = (el.value || '').trim();
+      if (!val) return;
+      var lab = form.querySelector('label[for="' + el.id + '"]');
+      data[lab ? lab.textContent.trim() : el.id] = val;
+    });
+    data.subject = 'New website request: ' + document.title.split('|')[0].trim();
+    data._subject = data.subject;
+    data.page = location.href;
+    data.submitted = new Date().toISOString();
+    for (var k in FORM_EXTRA_FIELDS) data[k] = FORM_EXTRA_FIELDS[k];
+    return data;
+  }
+
+  function sendForm(data) {
+    if (!FORM_ENDPOINT) {
+      if (window.console) console.info('[Elite Windshields] Test mode - form not sent:', data);
+      return new Promise(function (resolve) { setTimeout(function () { resolve(true); }, 700); });
+    }
+    return fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (j) {
+        return res.ok && j.success !== false;
+      });
+    });
+  }
+
   document.querySelectorAll('form[data-demo-form]').forEach(function (form) {
+    var loadedAt = Date.now();
+    var btn = form.querySelector('button[type="submit"]');
+    var label = btn.textContent;
+
+    Object.keys(AUTOCOMPLETE).forEach(function (id) {
+      var el = form.querySelector('#' + id);
+      if (el) el.setAttribute('autocomplete', AUTOCOMPLETE[id]);
+    });
+
+    var hp = document.createElement('div');
+    hp.className = 'hp-field';
+    hp.setAttribute('aria-hidden', 'true');
+    hp.innerHTML = '<label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>';
+    form.appendChild(hp);
+
+    var status = document.createElement('div');
+    status.className = 'form-status';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    form.insertBefore(status, btn);
+
+    function showThanks(name) {
+      var panel = document.createElement('div');
+      panel.className = 'form-success';
+      panel.setAttribute('role', 'status');
+      panel.innerHTML =
+        '<div class="check-big">&#10003;</div>' +
+        '<h3>Thank you' + '</h3>' +
+        '<p></p>' +
+        (FORM_ENDPOINT ? '' : '<p class="test-note">Test mode: this submission was not sent.</p>') +
+        '<button type="button" class="btn btn-outline">Send another</button>';
+      panel.querySelector('p').textContent = (name ? name + ', your' : 'Your') +
+        ' request has been received. Our team will contact you shortly. For anything urgent, call 780-835-1844.';
+      panel.querySelector('button').addEventListener('click', function () {
+        panel.remove();
+        form.hidden = false;
+        form.reset();
+        loadedAt = Date.now();
+      });
+      form.hidden = true;
+      form.parentNode.insertBefore(panel, form.nextSibling);
+      panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      alert('Thanks! Your request has been received. Our team will contact you shortly.');
-      form.reset();
+      if (btn.disabled) return;
+      status.textContent = '';
+      status.className = 'form-status';
+      var first = form.querySelector('input[type="text"]');
+      var name = first && first.name !== 'website' ? first.value.trim().split(/\s+/)[0] : '';
+
+      // Spam traps: hidden field filled in, or submitted impossibly fast. Pretend success, send nothing.
+      if (hp.querySelector('input').value || Date.now() - loadedAt < 2000) { showThanks(name); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      sendForm(formData(form)).then(function (ok) {
+        if (!ok) throw new Error('send failed');
+        showThanks(name);
+      }).catch(function () {
+        status.className = 'form-status error';
+        status.textContent = 'Sorry, something went wrong and your message was not sent. Please try again, or call us at 780-835-1844.';
+      }).then(function () {
+        btn.disabled = false;
+        btn.textContent = label;
+      });
     });
   });
 });
