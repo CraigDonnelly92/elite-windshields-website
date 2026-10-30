@@ -757,3 +757,6 @@ iframe, video, table { max-width: 100%; }
 .form-success .test-note { font-size: 12px; font-style: italic; }
 .btn[disabled] { opacity: 0.7; cursor: wait; }
 .form-group input:user-invalid, .form-group select:user-invalid, .form-group textarea:user-invalid { border-color: #ef4444; }
+
+.hero-features .feature-highlight { color: var(--text); font-weight: 600; }
+.hero-features .feature-highlight .dot { background: var(--blue); color: #fff; }
