@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         (FORM_ENDPOINT ? '' : '<p class="test-note">Test mode: this submission was not sent.</p>') +
         '<button type="button" class="btn btn-outline">Send another</button>';
       panel.querySelector('p').textContent = (name ? name + ', your' : 'Your') +
-        ' request has been received. Our team will contact you shortly. For anything urgent, call 780-835-1844.';
+        ' request has been received. We'll be in touch shortly. For anything urgent, call 780-835-1844.';
       panel.querySelector('button').addEventListener('click', function () {
         panel.remove();
         form.hidden = false;
