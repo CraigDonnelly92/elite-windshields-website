@@ -4,8 +4,9 @@
 // Quote and contact forms are in TEST MODE while FORM_ENDPOINT is empty: they validate and show the
 // thank-you message, but nothing is sent anywhere. To go live, paste the form service's URL below
 // (for example a Formspree or Web3Forms endpoint) and add any extra fields it needs (such as an access key).
-var FORM_ENDPOINT = '';
-var FORM_EXTRA_FIELDS = {};
+var FORM_ENDPOINT = 'https://api.web3forms.com/submit';
+// TEST access key (messages go to the developer's test inbox). Replace with the client's own key at launch.
+var FORM_EXTRA_FIELDS = { access_key: '4da97c62-ac6b-4101-b94b-a9ab5cb59c92', from_name: 'Elite Windshields Website' };
 
 
 // Mobile menu toggle
@@ -165,6 +166,11 @@ document.addEventListener('DOMContentLoaded', function () {
       var lab = form.querySelector('label[for="' + el.id + '"]');
       data[lab ? lab.textContent.trim() : el.id] = val;
     });
+    var em = form.querySelector('input[type="email"]');
+    if (em && em.value.trim()) data.email = em.value.trim();
+    var fn = form.querySelector('#q-first'), ln = form.querySelector('#q-last'), fl = form.querySelector('#c-name');
+    var nm = fl ? fl.value.trim() : ((fn ? fn.value.trim() : '') + ' ' + (ln ? ln.value.trim() : '')).trim();
+    if (nm) data.name = nm;
     data.subject = 'New website request: ' + document.title.split('|')[0].trim();
     data._subject = data.subject;
     data.page = location.href;
