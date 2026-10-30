@@ -151,6 +151,17 @@ document.addEventListener('DOMContentLoaded', function () {
     start();
   }
 
+  // Pre-select the service on the quote form from a link like quote.html?service=Window+Tinting
+  var svc = document.getElementById('q-service');
+  if (svc && window.URLSearchParams) {
+    var wanted = new URLSearchParams(location.search).get('service');
+    if (wanted) {
+      Array.prototype.forEach.call(svc.options, function (opt) {
+        if (opt.text.toLowerCase() === wanted.toLowerCase()) svc.value = opt.value || opt.text;
+      });
+    }
+  }
+
   // Quote + contact forms
   var AUTOCOMPLETE = {
     'q-first': 'given-name', 'q-last': 'family-name', 'q-email': 'email', 'q-phone': 'tel',
