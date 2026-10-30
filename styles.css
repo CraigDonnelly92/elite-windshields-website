@@ -744,3 +744,4 @@ iframe, video, table { max-width: 100%; }
 .legal h2 { font-size: 20px; margin: 32px 0 10px; }
 .legal p { color: var(--text-muted); margin: 0 0 14px; }
 .legal .legal-link { color: var(--blue-light); font-weight: 600; }
+.form-note .legal-link { color: var(--blue-light); text-decoration: underline; }
