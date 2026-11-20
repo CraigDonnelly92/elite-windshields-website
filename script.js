@@ -266,6 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.textContent = 'Sending...';
       sendForm(formData(form)).then(function (ok) {
         if (!ok) throw new Error('send failed');
+        if (window.daveTrack) window.daveTrack('form'); // counted for the monthly website report (no personal details)
         showThanks(name);
       }).catch(function () {
         status.className = 'form-status error';
